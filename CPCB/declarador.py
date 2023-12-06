@@ -3,7 +3,7 @@ perfil_1 = 'Participante + 1 Minicurso'
 perfil_2 = 'Participante + 2 Minicursos'
 
 arquivo = 'Inscritos CPCB 2024.xlsx - Geral.csv'
-fila_simultanea = 10
+fila_simultanea = 5
 
 latex_declara = '''\\documentclass[12pt]{article}
 	\\usepackage[a4paper,landscape]{geometry}
@@ -99,17 +99,16 @@ def produtor (arq):
 	fila.append(arq)
 	fila_sem.release()
 def consumidor ():
-	while True:		
-		fila_sem.acquire()
-		while len(fila):
-			time.sleep(1)
-			threading.Thread(target=consumir, args=[fila.pop()]).start()
+	while len(fila):		
+		fila_livre.acquire()
+		fila_sem.acquire()		
+		threading.Thread(target=consumir, args=[fila.pop()]).start()
 		fila_sem.release()	
-def consumir (arq):
-	fila_livre.acquire()
+	#	time.sleep(1)
+def consumir (arq):	
 	print(os.system(f'pdflatex.exe -synctex=1 -interaction=nonstopmode "{arq}"'), '\t', arq)
 	fila_livre.release()
-threading.Thread(target=consumidor, daemon=True).start()	
+#threading.Thread(target=consumidor, daemon=True).start()	
 
 for ln in planilha:
 	cidade = ln[col_cidade].upper()
@@ -156,4 +155,5 @@ for ln in planilha:
 		a = tex.name
 
 	produtor(a)
-input('Enter para encerrar')	
+consumidor()	
+#input('Enter para encerrar')	
