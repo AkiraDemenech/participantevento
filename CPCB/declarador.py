@@ -5,6 +5,9 @@ perfil_2 = 'Participante + 2 Minicursos'
 arquivo = 'Inscritos CPCB 2024.xlsx - Geral.csv'
 fila_simultanea = 5
 
+pasta_latex = 'LaTeX'
+pasta_pdf = 'PDF'
+
 latex_declara = '''\\documentclass[12pt]{article}
 	\\usepackage[a4paper,landscape]{geometry}
 	\\usepackage[T1]{fontenc}
@@ -106,7 +109,7 @@ def consumidor ():
 		fila_sem.release()	
 	#	time.sleep(1)
 def consumir (arq):	
-	print(os.system(f'pdflatex.exe -synctex=1 -interaction=nonstopmode "{arq}"'), '\t', arq)
+	print('\n',os.system(f'pdflatex.exe -synctex=1 -interaction=nonstopmode -output-directory {pasta_pdf} "{arq}"'), '\t', arq)
 	fila_livre.release()
 #threading.Thread(target=consumidor, daemon=True).start()	
 
@@ -136,7 +139,7 @@ for ln in planilha:
 	else:	
 		print('Perfil não identificado\n')
 
-	with open(f'{tipo} {nome} {cpf} {rg}.tex', 'w', encoding='utf-8') as tex:
+	with open(f'{pasta_latex}/{tipo} {nome} {cpf} {rg}.tex', 'w', encoding='utf-8') as tex:
 		print(latex_declara, file=tex)
 		print(latex_abre, file=tex)
 		print(end=(modelo_participante % nome), file=tex)

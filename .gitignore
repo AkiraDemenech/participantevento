@@ -1,7 +1,8 @@
 #LaTeX
 *.synctex.gz
 *.aux
-*.pdf
+CPCB/PDF/
+CPCB/LaTeX/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
